@@ -1,8 +1,9 @@
 package com.example.homework2.general;
 
-import org.springframework.http.HttpStatus;
+import com.example.homework2.exception.ProductCommentNotFoundExc;
+import com.example.homework2.exception.UserCommentNotFoundExc;
+import com.example.homework2.exception.UsernameAndPhoneNumNotMatch;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.TransactionSystemException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,38 +17,35 @@ import java.time.LocalDateTime;
 public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler
-    public final ResponseEntity<Object> handleAllExceptions(Exception e, WebRequest webRequest) {
+    public final ResponseEntity<GenericErrorMessage> handleUsernameAndPhoneNumberNotMatchingException(UsernameAndPhoneNumNotMatch e, WebRequest webRequest) {
 
-        String message = e.getMessage();
+        String message = e.getErrorMessage();
         String description = webRequest.getDescription(false);
 
         var genericErrorMessage = new GenericErrorMessage(LocalDateTime.now(), message, description);
-        var response = RestResponse.error(genericErrorMessage);
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(genericErrorMessage);
     }
 
     @ExceptionHandler
-    public final ResponseEntity<Object> handleAllExceptions(TransactionSystemException e, WebRequest webRequest) {
+    public final ResponseEntity<GenericErrorMessage> handleUserCommentsNotFoundException(UserCommentNotFoundExc e, WebRequest webRequest) {
 
-        String message = e.getMessage();
+        String message = e.getErrorMessage();
         String description = webRequest.getDescription(false);
 
         var genericErrorMessage = new GenericErrorMessage(LocalDateTime.now(), message, description);
-        var response = RestResponse.error(genericErrorMessage);
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(genericErrorMessage);
     }
-
     @ExceptionHandler
-    public final ResponseEntity<Object> handleAllExceptions(BusinessException e, WebRequest webRequest) {
+    public final ResponseEntity<GenericErrorMessage> handleProductCommentsNotFoundException(ProductCommentNotFoundExc e, WebRequest webRequest) {
 
-        String message = e.getBaseErrorMessage().getMessage();
+        String message = e.getErrorMessage();
         String description = webRequest.getDescription(false);
 
         var genericErrorMessage = new GenericErrorMessage(LocalDateTime.now(), message, description);
-        var response = RestResponse.error(genericErrorMessage);
 
-        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        return ResponseEntity.internalServerError().body(genericErrorMessage);
     }
+
 }

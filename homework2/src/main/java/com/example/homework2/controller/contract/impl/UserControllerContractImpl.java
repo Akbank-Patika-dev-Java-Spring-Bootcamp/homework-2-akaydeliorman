@@ -6,6 +6,7 @@ import com.example.homework2.dto.user.UserDeleteRequest;
 import com.example.homework2.dto.user.UserSaveRequest;
 import com.example.homework2.dto.user.UserUpdateRequest;
 import com.example.homework2.entity.User;
+import com.example.homework2.exception.UsernameAndPhoneNumNotMatch;
 import com.example.homework2.mapper.UserMapper;
 import com.example.homework2.service.UserEntityService;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +33,17 @@ public class UserControllerContractImpl implements UserControllerContract
 
     @Override
     public UserDTO findByUsername(String username) {
-        return userEntityService.findByUsername(username);
+        User user = userEntityService.findByUsername(username);
+        return UserMapper.INSTANCE.convertToUserDTO(user);
     }
 
     @Override
     public void delete(UserDeleteRequest userDeleteRequest) {
-        userEntityService.delete(userDeleteRequest);
+        User user = userEntityService.findByUsername(userDeleteRequest.username());
+        if(!user.getPhoneNumber().equals(userDeleteRequest.phoneNumber()) || !user.getUsername().equals(userDeleteRequest.username())){
+            throw new UsernameAndPhoneNumNotMatch(userDeleteRequest.username() + " username and " + userDeleteRequest.phoneNumber() + "phone number do not match...");
+        }
+        userEntityService.delete(user);
     }
 
     @Override

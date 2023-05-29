@@ -20,14 +20,14 @@ public class CommentEntityService extends BaseEntityService<Comment, CommentRepo
         this.commentRepository = commentRepository;
     }
 
-    public List<CommentDTO> findAllByProductId(Long id){
+    public List<Comment> findAllByProductId(Long id){
         List<Comment> commentList = commentRepository.findAllByProductId(id);
-        return commentMapper.converToCommentDTOList(commentList);
+        return (commentList);
     }
 
-    public List<CommentDTO> findAllByUserId(Long id){
+    public List<Comment> findAllByUserId(Long id){
         List<Comment> commentList = commentRepository.findAllByUserId(id);
-        return commentMapper.converToCommentDTOList(commentList);
+        return (commentList);
     }
 
 }

@@ -4,6 +4,8 @@ import com.example.homework2.controller.contract.CommentControllerContract;
 import com.example.homework2.dto.comment.CommentDTO;
 import com.example.homework2.dto.comment.CommentSaveRequest;
 import com.example.homework2.entity.Comment;
+import com.example.homework2.exception.ProductCommentNotFoundExc;
+import com.example.homework2.exception.UserCommentNotFoundExc;
 import com.example.homework2.mapper.CommentMapper;
 import com.example.homework2.service.CommentEntityService;
 import lombok.RequiredArgsConstructor;
@@ -41,11 +43,19 @@ public class CommentControllerContractImpl implements CommentControllerContract 
 
     @Override
     public List<CommentDTO> findAllByProductId(Long id) {
-        return commentEntityService.findAllByProductId(id);
+        List<Comment> commentList = commentEntityService.findAllByProductId(id);
+        if(commentList.isEmpty()){
+            throw new ProductCommentNotFoundExc("No comments.");
+        }
+        return CommentMapper.INSTANCE.converToCommentDTOList(commentList);
     }
 
     @Override
     public List<CommentDTO> findAllByUserId(Long id) {
-        return commentEntityService.findAllByUserId(id);
+        List<Comment> commentList = commentEntityService.findAllByUserId(id);
+        if(commentList.isEmpty()){
+            throw new UserCommentNotFoundExc("No comments.");
+        }
+        return CommentMapper.INSTANCE.converToCommentDTOList(commentList);
     }
 }

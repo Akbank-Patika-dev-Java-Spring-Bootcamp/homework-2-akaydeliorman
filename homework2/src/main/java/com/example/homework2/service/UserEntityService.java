@@ -23,9 +23,9 @@ public class UserEntityService extends BaseEntityService<User, UserRepository> {
         this.userRepository = userRepository;
     }
 
-    public UserDTO findByUsername(String username){
+    public User findByUsername(String username){
         User user = userRepository.findByUsername(username);
-        return UserMapper.INSTANCE.convertToUserDTO(user);
+        return (user);
     }
 
     public UserDTO findByUsernameAndPhoneNumber(String username, String phoneNumber){
